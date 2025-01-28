@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Downloader</title>
+    <style>
+      :root {
+        --primary-color: #4caf50;
+        --primary-hover: #45a049;
+        --dark: #333;
+        --white: #fff;
+        --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f5f5f5;
+      }
+
+      header {
+        background-color: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .container {
+        background: var(--white);
+        max-width: 800px;
+        width: 100%;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      label {
+        font-weight: 500;
+        color: #555;
+      }
+
+      input {
+        padding: 0.8rem;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      button {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+      }
+
+      video {
+        width: 100%;
+        max-width: 736px;
+        margin: 1rem auto;
+        border-radius: 5px;
+        box-shadow: var(--shadow);
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 1rem;
+        margin-top: auto;
+      }
+
+      /* Loading indicator */
+      .loading {
+        display: none;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .loading.active {
+        display: block;
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .container {
+          margin: 0 1rem;
+          padding: 1.5rem;
+        }
+
+        header h1 {
+          font-size: 1.5rem;
+        }
+
+        video {
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Video Downloader</h1>
+    </header>
+
+    <main>
+      <div class="container">
+        <form
+          action="{{ url_for('home') }}"
+          method="POST"
+          onsubmit="showProcessing(this)"
+        >
+          <label for="video-url">Enter Video URL:</label>
+          <input
+            type="url"
+            id="video-url"
+            name="video-url"
+            placeholder="Paste your video URL here"
+            required
+          />
+
+          {% if video %}
+          <div class="video-container">
+            <video controls>
+              <source src="{{ video | safe }}" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          {% endif %}
+
+          <button type="submit">Download Video</button>
+        </form>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; {{ current_year }} Video Downloader. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Get current year for footer
+      document.querySelector(
+        "footer p"
+      ).innerHTML = `&copy; ${new Date().getFullYear()} Video Downloader. All rights reserved.`;
+
+      // Form submission handling
+      document.querySelector("form").addEventListener("submit", function (e) {
+        const button = this.querySelector("button");
+        const loading = document.getElementById("loading");
+        button.innerHTML = "Processing...";
+        button.disabled = true;
+        loading.classList.add("active");
+      });
+    </script>
+  </body>
+</html>
