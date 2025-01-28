@@ -26,7 +26,7 @@ def home():
         name = download_yt_combined(url_fetched)
 
         final_path = find_files_with_keyword(
-            keyword=name[0:10]).replace("\\", "/").split("DOWNLOADER/")[1]
+            keyword=name[0:8]).replace("\\", "/").split("DOWNLOADER/")[1]
 
         # print(final_path)
 
