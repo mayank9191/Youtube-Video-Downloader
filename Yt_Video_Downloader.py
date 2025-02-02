@@ -2,7 +2,7 @@ from yt_dlp import YoutubeDL
 import os
 
 # Video URL
-# url = input("Enter the video URL you want to download ->")
+url = input("Enter the video URL you want to download ->")
 
 
 def download_yt_combined(url):
@@ -130,3 +130,11 @@ def get_video_info(url):
             "thumbnail": info_dict['thumbnail']
         }
         return info
+
+
+# download_yt_combined(url)
+# download_yt_video_only(url)
+# download_yt_audio_only(url)
+# download_thumbnail(url)
+# download_transcript(url)
+# print(get_video_info(url))
