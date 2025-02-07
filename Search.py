@@ -7,6 +7,7 @@ load_dotenv()
 API_KEY = os.getenv("youtube-api-key")
 
 
+# used to find video by name giving lisrt
 def listvideo(query):
     URL = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={
         query}&type=video&key={API_KEY}"
