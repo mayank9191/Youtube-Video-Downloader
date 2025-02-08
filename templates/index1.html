@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Downloader</title>
+    <style>
+      :root {
+        --primary-color: #4caf50;
+        --primary-hover: #45a049;
+        --error-color: #ff4444;
+        --success-color: #00c851;
+        --dark: #333;
+        --white: #fff;
+        --gray: #f5f5f5;
+        --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --text-color: #333;
+        --background-color: #f5f5f5;
+        --container-bg: #fff;
+        --input-bg: #fff;
+        --input-border: #ddd;
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: var(--transition);
+      }
+
+      body.dark-mode {
+        --text-color: #f5f5f5;
+        --background-color: #1a1a1a;
+        --container-bg: #2d2d2d;
+        --input-bg: #3d3d3d;
+        --input-border: #4d4d4d;
+        --gray: #333;
+      }
+
+      header {
+        background-color: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      h1 a {
+        text-decoration: none;
+        color: var(--white);
+        font-size: 2rem;
+        font-weight: 700;
+        transition: var(--transition);
+      }
+
+      h1 a:hover {
+        color: var(--primary-color);
+      }
+
+      .container {
+        background: var(--container-bg);
+        max-width: 800px;
+        width: 90%;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        margin: 2rem auto;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 1.1rem;
+      }
+
+      input {
+        padding: 1rem;
+        border: 2px solid var(--input-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        width: 100%;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      }
+
+      button {
+        background-color: var(--primary-color);
+        color: var(--white);
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+      }
+
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        display: none;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .alert.error {
+        background-color: #ffebee;
+        color: var(--error-color);
+        border: 1px solid var(--error-color);
+      }
+
+      .alert.success {
+        background-color: #e8f5e9;
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+      }
+
+      #video-container {
+        display: grid;
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .video-item {
+        background: var(--container-bg);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+      }
+
+      .video-item:hover {
+        transform: translateY(-5px);
+      }
+
+      .video-thumbnail {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .video-info {
+        padding: 1rem;
+      }
+
+      .video-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+      }
+
+      video {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+      }
+
+      footer {
+        background-color: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 1rem;
+        margin-top: auto;
+      }
+
+      .dark-mode-toggle {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: var(--white);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: var(--transition);
+        width: auto;
+      }
+
+      .dark-mode-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: none;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--white);
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+          padding: 1.5rem;
+          margin: 1rem auto;
+        }
+
+        header {
+          padding: 1rem;
+        }
+
+        h1 a {
+          font-size: 1.5rem;
+        }
+
+        button {
+          padding: 0.875rem 1.5rem;
+          font-size: 1rem;
+        }
+
+        .video-title {
+          font-size: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 1rem;
+        }
+
+        input {
+          padding: 0.875rem;
+        }
+
+        .dark-mode-toggle {
+          top: 0.5rem;
+          right: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><a href="{{url_for('home')}}">Video Downloader</a></h1>
+      <button class="dark-mode-toggle" aria-label="Toggle dark mode">🌓</button>
+    </header>
+
+    <div class="container">
+      <div id="alert" class="alert"></div>
+
+      <form id="download-form" action="{{ url_for('home') }}" method="POST">
+        <div class="input-group">
+          <label for="video-url">Enter Video Name:</label>
+          <input
+            type="text"
+            id="video-url"
+            name="video_name"
+            placeholder="Enter video name to search..."
+            required
+          />
+        </div>
+
+        <button type="submit" id="submit-btn">
+          <span>Search Video</span>
+        </button>
+
+        {% if list %}
+        <div id="video-container">
+          {% if video %}
+          <video controls>
+            <source src="{{ video }}" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          {% endif %} {% for i in list %}
+          <div class="video-item">
+            <a
+              href="https://www.youtube.com/watch?v={{i['video_id']}}"
+              target="_blank"
+            >
+              <img
+                src="{{i['video_thumbnail']['url']}}"
+                alt="{{i['video_name']}}"
+                class="video-thumbnail"
+              />
+            </a>
+            <div class="video-info">
+              <h2 class="video-title">{{i["video_name"]}}</h2>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </form>
+    </div>
+
+    <footer>
+      <p>
+        &copy; <span id="current-year"></span> Video Downloader. All rights
+        reserved.
+      </p>
+    </footer>
+
+    <script>
+      // Get current year for footer
+      document.getElementById("current-year").textContent =
+        new Date().getFullYear();
+
+      // Dark mode toggle with localStorage persistence
+      const darkModeToggle = document.querySelector(".dark-mode-toggle");
+      const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
+
+      // Check for saved dark mode preference or system preference
+      const savedDarkMode = localStorage.getItem("darkMode");
+      if (
+        savedDarkMode === "true" ||
+        (savedDarkMode === null && prefersDarkMode.matches)
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+
+      darkModeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        localStorage.setItem(
+          "darkMode",
+          document.body.classList.contains("dark-mode")
+        );
+      });
+
+      // Form submission handling
+      const form = document.getElementById("download-form");
+      const submitBtn = document.getElementById("submit-btn");
+      const alert = document.getElementById("alert");
+
+      function showAlert(message, type) {
+        alert.textContent = message;
+        alert.className = `alert ${type}`;
+        alert.style.display = "block";
+        setTimeout(() => {
+          alert.style.display = "none";
+        }, 5000);
+      }
+
+      form.addEventListener("submit", function (e) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<div class="spinner"></div><span>Searching...</span>';
+        showAlert("Searching for videos...", "success");
+      });
+    </script>
+  </body>
+</html>
+git 
