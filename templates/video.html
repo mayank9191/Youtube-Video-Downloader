@@ -318,25 +318,10 @@
         </button>
 
         <div id="video-container">
-          {% if video %}
           <video controls>
-            <source src="{{video }}" type="video/mp4" />
+            <source src="{{ video }}" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {% endif %} {%if list%} {% for i in list %}
-          <div class="video-item">
-            <a href="{{url_for('video',video_id = i['video_id'])}}">
-              <img
-                src="{{i['video_thumbnail']['url']}}"
-                alt="{{i['video_name']}}"
-                class="video-thumbnail"
-              />
-            </a>
-            <div class="video-info">
-              <h2 class="video-title">{{i["video_name"]}}</h2>
-            </div>
-          </div>
-          {% endfor %} {% endif%}
         </div>
       </form>
     </div>
